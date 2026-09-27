@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<CommunityApplications>
+  <Profile>Unraid container wrapper and setup dashboard for CLIProxyAPI. Installation instructions and template support are available in the repository README and issue tracker. The image extends the upstream runtime with initialization and authenticated browser setup. CLIProxyAPI remains a third-party project.</Profile>
+  <Icon>https://raw.githubusercontent.com/OzoneH3/CLIProxyAPI_unraid/main/assets/cliproxyapi.png</Icon>
+  <WebPage>https://github.com/OzoneH3/CLIProxyAPI_unraid</WebPage>
+  <Forum>https://github.com/OzoneH3/CLIProxyAPI_unraid/issues</Forum>
+</CommunityApplications>

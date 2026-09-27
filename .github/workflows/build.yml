@@ -1,0 +1,41 @@
+name: Build and test
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      matrix:
+        runner: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Go tests and build
+        run: |
+          test -z "$(gofmt -l cmd internal web/embed.go)"
+          go vet ./...
+          go test -race ./...
+          go build ./...
+      - name: Template and frontend syntax
+        run: |
+          python3 scripts/validate-template.py
+          node --check web/static/app.js
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          load: true
+          push: false
+          tags: cliproxyapi-unraid:local
+      - name: Real upstream smoke test
+        run: |
+          python3 scripts/smoke.py
+          python3 scripts/smoke.py cliproxyapi-unraid:local --legacy

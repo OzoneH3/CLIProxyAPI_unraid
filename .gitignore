@@ -1,0 +1,34 @@
+# Runtime configuration, credentials, and persistent container data
+config.yaml
+config.yml
+auths/
+logs/
+plugins/
+appdata/
+.cli-proxy-api/
+.env
+.env.*
+*.log
+*.pem
+*.key
+*.bak
+
+# Local editor and agent state
+.DS_Store
+*~
+*.swp
+.idea/
+.vscode/
+.agents/
+.codex/
+
+# Wrapper runtime/development/build output
+/data/
+/state/
+/bin/
+/dist/
+/coverage.out
+/unraid-wrapper
+/mock-cliproxy
+__pycache__/
+**/__pycache__/
