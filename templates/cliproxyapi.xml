@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>CLIProxyAPI</Name>
+  <!-- Local build until public GHCR publication; see scripts/activate-release.py. -->
+  <Repository>cliproxyapi-unraid:local</Repository>
+  <Registry>https://ghcr.io</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/OzoneH3/CLIProxyAPI_unraid/issues</Support>
+  <Project>https://github.com/router-for-me/CLIProxyAPI</Project>
+  <ReadMe>https://github.com/OzoneH3/CLIProxyAPI_unraid/blob/main/README.md</ReadMe>
+  <Overview>CLIProxyAPI exposes an OpenAI-compatible API for supported CLI/OAuth providers. Choose a WebUI password (12-72 bytes), click Apply, then open WebUI to connect your accounts and copy your generated API key. Configuration and credentials are initialized automatically in appdata. For browser OAuth on another computer, paste the completed localhost callback URL into the WebUI when prompted; no SSH or terminal login is needed.[br][br]API: http://UNRAID-IP:8317/v1. Dashboard: port 8318. CLIProxyAPI is a third-party project. Provider availability and authentication methods are controlled by their respective services. Use a trusted LAN or VPN; do not expose either port directly to the internet. Existing appdata is backed up before necessary configuration migration.</Overview>
+  <Description>This repository supplies the Unraid container wrapper, Docker template, and setup dashboard. CLIProxyAPI itself is an independent upstream project; report wrapper/template issues through this repository's support link and upstream application defects to the CLIProxyAPI project.</Description>
+  <Category>Tools:Utilities</Category>
+  <WebUI>http://[IP]:[PORT:8318]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/OzoneH3/CLIProxyAPI_unraid/main/templates/cliproxyapi.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/OzoneH3/CLIProxyAPI_unraid/main/assets/cliproxyapi.png</Icon>
+  <ExtraParams>--restart=unless-stopped</ExtraParams>
+  <Config Name="API Port" Target="8317" Default="8317" Mode="tcp" Description="OpenAI-compatible API. If changing this host port, also update API Public Port under advanced settings so the dashboard displays the correct URL." Type="Port" Display="always" Required="true" Mask="false">8317</Config>
+  <Config Name="WebUI Port" Target="8318" Default="8318" Mode="tcp" Description="Authenticated setup dashboard and provider connections. Use a trusted LAN or VPN." Type="Port" Display="always" Required="true" Mask="false">8318</Config>
+  <Config Name="Appdata" Target="/data" Default="/mnt/user/appdata/cliproxyapi" Mode="rw" Description="Persistent configuration, provider credentials, logs, plugins, and wrapper state. Existing data is reused. No manual config file creation is needed." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/cliproxyapi</Config>
+  <Config Name="WebUI Password" Target="WEBUI_PASSWORD" Default="" Mode="" Description="Choose a unique password of 12-72 bytes. Changing this value and applying the template rotates the login password and invalidates sessions. No default password." Type="Variable" Display="always" Required="true" Mask="true"/>
+  <Config Name="API Public Port" Target="API_PUBLIC_PORT" Default="8317" Mode="" Description="Set to the API host port above. Used only for the dashboard copyable URL; container API port stays 8317." Type="Variable" Display="advanced" Required="false" Mask="false">8317</Config>
+  <Config Name="HTTPS-only Session Cookie" Target="WEBUI_SECURE_COOKIE" Default="false|true" Mode="" Description="Set true only when accessing the WebUI through HTTPS. HTTP installations must remain false. Never trust unconfigured forwarded headers." Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+</Container>

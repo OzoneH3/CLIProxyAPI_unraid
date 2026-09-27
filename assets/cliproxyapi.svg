@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <title>CLIProxyAPI Unraid wrapper</title>
+  <rect x="8" y="8" width="240" height="240" rx="52" fill="#17212c"/>
+  <path d="M84 76 40 128l44 52M172 76l44 52-44 52" fill="none" stroke="#b8e3f6" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M106 166V90h43m-18-18 18 18-18 18" fill="none" stroke="#9de4b7" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
