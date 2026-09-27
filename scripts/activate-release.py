@@ -19,7 +19,7 @@ platforms = {m.get('platform', {}).get('architecture') for m in manifest.get('ma
 if not {'amd64', 'arm64'} <= platforms:
     raise SystemExit('Public multi-platform latest image not available; template unchanged.')
 p = Path('templates/cliproxyapi.xml')
-text = p.read_text().replace('cliproxyapi-unraid:local', f'ghcr.io/{repo}:latest')
+text = p.read_text().replace('cliproxyapi-unraid:local', f'ghcr.io/{repo}')
 text = text.replace('  <!-- Local build until public GHCR publication; see scripts/activate-release.py. -->\n', '')
 p.write_text(text)
 print('Public image verified. Review and commit the activated template before CA submission.')

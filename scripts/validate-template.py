@@ -9,7 +9,7 @@ for key, value in {'Name': 'CLIProxyAPI', 'Network': 'bridge', 'Shell': 'sh',
                    'Privileged': 'false', 'WebUI': 'http://[IP]:[PORT:8318]/',
                    'ExtraParams': '--restart=unless-stopped'}.items():
     assert r.findtext(key) == value, key
-assert r.findtext('Repository') in ('cliproxyapi-unraid:local', 'ghcr.io/ozoneh3/cliproxyapi-unraid:latest')
+assert r.findtext('Repository') in ('cliproxyapi-unraid:local', 'ghcr.io/ozoneh3/cliproxyapi-unraid')
 attrs = {'Name', 'Target', 'Default', 'Mode', 'Description', 'Type', 'Display', 'Required', 'Mask'}
 configs = r.findall('Config')
 assert len(configs) == 6

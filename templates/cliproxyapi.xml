@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <Container version="2">
   <Name>CLIProxyAPI</Name>
-  <!-- Local build until public GHCR publication; see scripts/activate-release.py. -->
-  <Repository>cliproxyapi-unraid:local</Repository>
+  <Repository>ghcr.io/ozoneh3/cliproxyapi-unraid</Repository>
   <Registry>https://ghcr.io</Registry>
   <Network>bridge</Network>
   <MyIP/>

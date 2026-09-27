@@ -9,10 +9,10 @@ CLIProxyAPI is a third-party project. Provider availability and authentication
 methods are controlled by their respective services. This is not an official
 OpenAI or Unraid application.
 
-**Release status:** the implementation builds and runs locally. No GHCR image
-was published and no Community Applications submission was made during this work.
-The checked-in template intentionally uses `cliproxyapi-unraid:local` until a
-public image has been verified. See **Publishing** before offering it through CA.
+**Release status:** the template uses the public
+`ghcr.io/ozoneh3/cliproxyapi-unraid` image. No Community Applications submission
+was made during this work. Local development commands use
+`cliproxyapi-unraid:local`.
 
 ## Install on Unraid
 
