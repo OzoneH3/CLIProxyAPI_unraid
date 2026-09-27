@@ -35,7 +35,44 @@ def port(number):
     return json.loads(docker('inspect', name))[0]['NetworkSettings']['Ports'][str(number) + '/tcp'][0]['HostPort']
 
 
-def wait_ready(base):
+def http_status(url):
+    try:
+        with urllib.request.urlopen(url, timeout=2) as response:
+            return 'http-' + str(response.status)
+    except urllib.error.HTTPError as error:
+        return 'http-' + str(error.code)
+    except (urllib.error.URLError, OSError, TimeoutError):
+        return 'unreachable'
+
+
+def safe_diagnostics(base, proxy):
+    """Emit metadata only; never container logs, environment, or configuration."""
+    try:
+        info = json.loads(docker('inspect', name))[0]
+        state = info.get('State', {})
+        health = state.get('Health', {}).get('Status', 'none')
+        print('SMOKE DIAGNOSTIC container_status=' + str(state.get('Status', 'unknown')))
+        print('SMOKE DIAGNOSTIC exit_code=' + str(state.get('ExitCode', 'unknown')))
+        print('SMOKE DIAGNOSTIC oom_killed=' + str(state.get('OOMKilled', False)).lower())
+        print('SMOKE DIAGNOSTIC health=' + health)
+        print('SMOKE DIAGNOSTIC image_id=' + str(info.get('Image', 'unknown')))
+        try:
+            image = json.loads(docker('image', 'inspect', info['Image']))[0]
+            print('SMOKE DIAGNOSTIC image_architecture=' + str(image.get('Architecture', 'unknown')))
+        except (KeyError, ValueError, RuntimeError):
+            print('SMOKE DIAGNOSTIC image_architecture=unknown')
+        process = subprocess.run(['docker', 'exec', name, 'sh', '-c',
+            'for p in unraid-wrapper CLIProxyAPI; do pgrep -x "$p" >/dev/null && printf "%s=running " "$p" || printf "%s=absent " "$p"; done'],
+            capture_output=True, text=True)
+        print('SMOKE DIAGNOSTIC processes=' + (process.stdout.strip() if process.returncode == 0 else 'unavailable'))
+    except (ValueError, RuntimeError):
+        print('SMOKE DIAGNOSTIC container_metadata=unavailable')
+    print('SMOKE DIAGNOSTIC webui_healthz=' + http_status(base + '/healthz'))
+    print('SMOKE DIAGNOSTIC webui_readyz=' + http_status(base + '/readyz'))
+    print('SMOKE DIAGNOSTIC proxy_models=' + http_status(proxy + '/v1/models'))
+
+
+def wait_ready(base, proxy):
     for _ in range(90):
         try:
             with urllib.request.urlopen(base + '/readyz', timeout=2) as r:
@@ -44,7 +81,8 @@ def wait_ready(base):
         except (urllib.error.URLError, OSError, TimeoutError):
             pass
         time.sleep(1)
-    raise RuntimeError('Container readiness timed out; review local container logs privately')
+    safe_diagnostics(base, proxy)
+    raise RuntimeError('Container readiness timed out; safe diagnostics emitted')
 
 
 try:
@@ -60,11 +98,11 @@ try:
            '-v', volume + ':/data', image)
     base = 'http://127.0.0.1:' + port(8318)
     proxy = 'http://127.0.0.1:' + port(8317)
-    wait_ready(base)
+    wait_ready(base, proxy)
     # --password enables the upstream v8 ten-second local-management watchdog.
     # Stay idle longer than that to prove the wrapper's internal keep-alive works.
     time.sleep(12)
-    wait_ready(base)
+    wait_ready(base, proxy)
     jar = http.cookiejar.CookieJar()
     client = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
 
@@ -131,7 +169,7 @@ try:
     docker('restart', '-t', '15', name)
     base = 'http://127.0.0.1:' + port(8318)
     proxy = 'http://127.0.0.1:' + port(8317)
-    wait_ready(base)
+    wait_ready(base, proxy)
     request('/api/key', expected=401)  # restart invalidates all sessions
     csrf = request('/api/login', 'POST', {'password': password})['csrf']
     assert request('/api/key')['key'] == second
