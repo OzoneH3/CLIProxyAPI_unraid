@@ -275,10 +275,13 @@ There are no npm or CDN dependencies in the shipped frontend.
 ## Build and publish
 
 The Dockerfile builds a static Go wrapper and layers it onto the upstream image,
-without modifying or rebuilding upstream source. It pins the tested v8.0.2
+without modifying or rebuilding upstream source. It pins the v8.0.56
 multi-platform image digest; updating that digest is an intentional maintenance
 change. Upstream's manifest contains Linux amd64 and arm64. Local runtime testing
 was performed on amd64; CI includes native amd64 and arm64 build/test jobs.
+
+This update includes upstream's [Codex OAuth refresh recovery fix](https://github.com/router-for-me/CLIProxyAPI/issues/6742).
+An already-invalidated refresh token still requires reconnecting the account.
 
 `.github/workflows/build.yml` runs Go tests, race checks, vet, XML and JavaScript
 validation, a Docker build, and real-upstream smoke tests. Pull requests never

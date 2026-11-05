@@ -1,9 +1,27 @@
 # Verified upstream contracts
 
+## Current image pin — 2026-11-05
+
+The Dockerfile selects CLIProxyAPI v8.0.56, source commit
+`585f97deac9aa57c700301221fb1a7085e1827cc`, using the multi-platform image
+`eceasy/cli-proxy-api:v8.0.56@sha256:684b7c9314f1198ebcaa6b5bf513d6b90384ea4c9c1704988d905c5567785cc7`.
+The registry manifest includes Linux amd64 and arm64.
+
+This release includes the [Codex OAuth refresh recovery fix](https://github.com/router-for-me/CLIProxyAPI/issues/6742),
+which refreshes outer credentials earlier and schedules recovery after rejected
+access tokens. An invalidated refresh token still requires a new provider login.
+On 2026-11-05, the wrapper image built successfully on Linux amd64 and passed
+both existing smoke tests: fresh installation and legacy migration. These cover
+bootstrap, API access, dashboard login, management isolation, CSRF, key rotation,
+restart persistence, health and child-process supervision. Live provider OAuth
+and inference were not exercised; native arm64 runtime checks remain in CI.
+
+## Original compatibility review
+
 Reviewed 2026-09-27 against CLIProxyAPI v8.0.2 and source commit
 `4a2c81864f31f39308e946c4c65e72147855da6e` in
 [router-for-me/CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI).
-The Dockerfile pins the multi-platform digest
+At that review, the Dockerfile pinned the multi-platform digest
 `sha256:b8306b3965755908e1dfcfe0fa114d8d3d4a3df2769ef5e5e3c62cfdf56ee315`.
 Its registry manifest includes Linux amd64 and arm64; local runtime checks use
 amd64. This is a compatibility snapshot, not a promise about future `latest`.
